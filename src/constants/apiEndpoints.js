@@ -1,0 +1,62 @@
+// Centralized API Endpoints for BHEL Connect Marketplace
+export const API_ENDPOINTS = {
+  AUTH: {
+    REQUEST_OTP: '/api/auth/request-otp/',
+    VERIFY_OTP: '/api/auth/verify-otp/',
+    REFRESH: '/api/auth/refresh/',
+    LOGOUT: '/api/auth/logout/',
+    PROFILE: '/api/users/profile/',
+  },
+  USERS: {
+    MY_LISTINGS: '/api/users/my-listings/',
+    MY_PURCHASES: '/api/users/my-purchases/',
+    SAVED_PRODUCTS: '/api/users/saved-products/',
+    TOKEN_HISTORY: '/api/users/token-history/',
+  },
+  SMARTBUY: {
+    CAMPAIGNS: '/api/smartbuy/campaigns/',
+    DETAIL: (id) => `/api/smartbuy/campaigns/${id}/`,
+    REGISTER: (id) => `/api/smartbuy/campaigns/${id}/register/`,
+    WAITLIST: (id) => `/api/smartbuy/campaigns/${id}/waitlist/`,
+    CANCEL_REGISTRATION: (id) => `/api/smartbuy/campaigns/${id}/cancel-registration/`,
+    SUBMIT_PAYMENT: (id) => `/api/smartbuy/campaigns/${id}/submit-payment/`,
+    CLOSE: (id) => `/api/smartbuy/campaigns/${id}/close/`,
+    CANCEL: (id) => `/api/smartbuy/campaigns/${id}/cancel/`,
+    EXTEND: (id) => `/api/smartbuy/campaigns/${id}/extend/`,
+    CLONE: (id) => `/api/smartbuy/campaigns/${id}/clone/`,
+  },
+  MARKETPLACE: {
+    LISTINGS: '/api/marketplace/listings/',
+    DETAIL: (id) => `/api/marketplace/listings/${id}/`,
+    STATUS: (id) => `/api/marketplace/listings/${id}/status/`,
+    CATEGORIES: '/api/marketplace/categories/',
+    SAVED: '/api/marketplace/saved/',
+    SAVED_DETAIL: (id) => `/api/marketplace/saved/${id}/`,
+    PENDING: '/api/marketplace/listings/pending/',
+    APPROVE: (id) => `/api/marketplace/listings/${id}/approve/`,
+    REJECT: (id) => `/api/marketplace/listings/${id}/reject/`,
+    REMOVE: (id) => `/api/marketplace/listings/${id}/remove/`,
+  },
+  CHAT: {
+    CONVERSATIONS: '/api/marketplace/chats/',
+    MESSAGES: (listingId) => `/api/marketplace/chats/${listingId}/messages/`,
+    WS_ROOM: (listingId) => `ws/chat/${listingId}/`,
+  },
+  ADMIN: {
+    DASHBOARD: '/api/admin/dashboard/',
+    PENDING_PAYMENTS: '/api/admin/payments/pending/',
+    APPROVE_PAYMENT: (id) => `/api/admin/payments/${id}/approve/`,
+    REJECT_PAYMENT: (id) => `/api/admin/payments/${id}/reject/`,
+    PENDING_REFUNDS: '/api/admin/refunds/pending/',
+    PROCESS_REFUND: (id) => `/api/admin/refunds/${id}/process/`,
+  },
+  REPORTS: {
+    EXCEL: (type) => `/api/reports/excel/${type}/`,
+    PDF: (type) => `/api/reports/pdf/${type}/`,
+  },
+  NOTIFICATIONS: {
+    LIST: '/api/notifications/',
+    READ: (id) => `/api/notifications/${id}/read/`,
+    READ_ALL: '/api/notifications/read-all/',
+  },
+};
