@@ -8,7 +8,7 @@ import ErrorState from '../../components/ErrorState';
 import { toast } from 'react-hot-toast';
 import { 
   Plus, Calendar, Clock, Edit2, Archive, XCircle, Copy, ArrowRight, Save, 
-  Trash2, Eye, RefreshCw 
+  Trash2, Eye, RefreshCw, FileSpreadsheet 
 } from 'lucide-react';
 
 const CampaignManagement = () => {
@@ -107,6 +107,30 @@ const CampaignManagement = () => {
       fetchCampaignsAndVendors();
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Failed to cancel campaign.');
+    }
+  };
+
+  // Handle download bookings report
+  const handleDownloadReport = async (campaignId, campaignTitle) => {
+    const title = campaignTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const filename = `campaign_${title}_buyers.xlsx`;
+    try {
+      toast.loading('Generating report...', { id: 'download' });
+      const blob = await adminApi.downloadCampaignBuyersReport(campaignId, 'excel');
+      
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success('Report downloaded successfully.', { id: 'download' });
+    } catch (err) {
+      console.error('Error downloading report:', err);
+      toast.error('Failed to download report.', { id: 'download' });
     }
   };
 
@@ -353,6 +377,15 @@ const CampaignManagement = () => {
                             <XCircle className="w-4 h-4" />
                           </button>
                         </>
+                      )}
+                      {camp.status === 'closed' && (
+                        <button
+                          onClick={() => handleDownloadReport(camp.id, camp.title)}
+                          title="Download Buyers Excel"
+                          className="p-1.5 border border-green-300 rounded hover:bg-green-50 text-green-600 cursor-pointer inline-flex"
+                        >
+                          <FileSpreadsheet className="w-4 h-4" />
+                        </button>
                       )}
                       <button
                         onClick={() => {
