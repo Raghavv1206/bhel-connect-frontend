@@ -103,7 +103,10 @@ export const AuthProvider = ({ children }) => {
       }
     }
     
-    localStorage.clear();
+    // Remove only our app's keys — do not use localStorage.clear() which wipes all domain data
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);

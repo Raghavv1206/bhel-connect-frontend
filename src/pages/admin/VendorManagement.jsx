@@ -29,7 +29,8 @@ const VendorManagement = () => {
     setError(null);
     try {
       const data = await smartbuyApi.getVendors();
-      setVendors(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setVendors(list);
     } catch (err) {
       console.error(err);
       setError('Failed to retrieve vendors list from server.');

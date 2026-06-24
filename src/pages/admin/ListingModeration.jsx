@@ -27,7 +27,8 @@ const ListingModeration = () => {
     setError(null);
     try {
       const data = await adminApi.getPendingListings();
-      setListings(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setListings(list);
     } catch (err) {
       console.error(err);
       setError('Failed to retrieve pending listings queue.');

@@ -54,12 +54,14 @@ const CampaignManagement = () => {
     setError(null);
     try {
       const campData = await smartbuyApi.getCampaigns();
-      setCampaigns(campData);
+      const campList = campData.results || (Array.isArray(campData) ? campData : []);
+      setCampaigns(campList);
       
       // Fetch vendors using smartbuyApi
       try {
         const vendorData = await smartbuyApi.getVendors();
-        setVendors(vendorData);
+        const vendorList = vendorData.results || (Array.isArray(vendorData) ? vendorData : []);
+        setVendors(vendorList);
       } catch (vendorErr) {
         console.error('Error fetching vendors:', vendorErr);
         setVendors([]);

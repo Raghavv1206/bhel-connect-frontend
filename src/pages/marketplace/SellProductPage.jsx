@@ -43,7 +43,8 @@ const SellProductPage = () => {
     const fetchCats = async () => {
       try {
         const data = await marketplaceApi.getCategories();
-        setCategories(data);
+        const list = data.results || (Array.isArray(data) ? data : []);
+        setCategories(list);
       } catch (err) {
         console.error('Failed to load categories', err);
       }

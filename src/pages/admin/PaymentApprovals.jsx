@@ -28,10 +28,12 @@ const PaymentApprovals = () => {
     try {
       if (activeTab === 'deposits') {
         const payments = await adminApi.getPendingPayments();
-        setPendingPayments(payments);
+        const list = payments.results || (Array.isArray(payments) ? payments : []);
+        setPendingPayments(list);
       } else {
         const refunds = await adminApi.getPendingRefunds();
-        setPendingRefunds(refunds);
+        const list = refunds.results || (Array.isArray(refunds) ? refunds : []);
+        setPendingRefunds(list);
       }
     } catch (err) {
       console.error(err);
@@ -61,7 +63,7 @@ const PaymentApprovals = () => {
   // Reject payment deposit
   const handleRejectPayment = async (e) => {
     e.preventDefault();
-    if (!rejectionReason.strip()) {
+    if (!rejectionReason.trim()) {
       toast.error('Please provide a rejection explanation.');
       return;
     }

@@ -3,10 +3,21 @@ import axios from 'axios';
 // Create a single axios instance with baseURL from environment variables
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  timeout: 30000, // 30-second timeout to prevent hung connections
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+/**
+ * Check if a string looks like a valid JWT (3 dot-separated base64 segments).
+ * This is a structural check only — it does not verify signatures.
+ */
+const isValidJwtFormat = (token) => {
+  if (!token || typeof token !== 'string') return false;
+  const parts = token.split('.');
+  return parts.length === 3 && parts.every(part => part.length > 0);
+};
 
 // Flag to prevent infinite loops during token refresh failures
 let isRefreshing = false;
@@ -28,7 +39,14 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      if (isValidJwtFormat(token)) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        // Corrupted token detected — clean up
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+      }
     }
     return config;
   },

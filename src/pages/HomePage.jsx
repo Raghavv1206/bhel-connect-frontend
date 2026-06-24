@@ -44,7 +44,8 @@ const HomePage = () => {
   const fetchDashboardData = async () => {
     try {
       // 1. Fetch active smartbuy campaigns
-      const campaigns = await smartbuyApi.getCampaigns({ status: 'active' });
+      const campaignsData = await smartbuyApi.getCampaigns({ status: 'active' });
+      const campaigns = campaignsData.results || (Array.isArray(campaignsData) ? campaignsData : []);
       setActiveCampaigns(campaigns);
 
       // 2. Fetch latest 3 approved available listings
@@ -60,8 +61,10 @@ const HomePage = () => {
       // 3. Fetch user purchases
       let purchaseCount = 0;
       try {
-        const purchases = await authApi.getMyPurchases();
-        purchaseCount = Array.isArray(purchases) ? purchases.length : 0;
+        const purchasesData = await authApi.getMyPurchases();
+        const purchasesList = purchasesData.results || (Array.isArray(purchasesData) ? purchasesData : []);
+        purchaseCount = purchasesList.length;
+
       } catch (e) {
         console.error('Failed to fetch user purchases:', e);
       }

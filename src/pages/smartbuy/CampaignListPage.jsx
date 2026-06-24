@@ -19,7 +19,8 @@ const CampaignListPage = () => {
     setError(null);
     try {
       const data = await smartbuyApi.getCampaigns({ status: 'active' });
-      setCampaigns(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setCampaigns(list);
     } catch (err) {
       console.error('Error fetching campaigns:', err);
       setError('Could not fetch active campaigns. Please check your connection.');

@@ -68,7 +68,8 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       const data = await authApi.getMyPurchases();
-      setMyPurchases(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setMyPurchases(list);
     } catch (err) {
       console.error(err);
       setMyPurchases([]);
@@ -82,7 +83,8 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       const data = await authApi.getMyListings();
-      setMyListings(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setMyListings(list);
     } catch (err) {
       console.error(err);
       setMyListings([]);
@@ -96,7 +98,8 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       const data = await marketplaceApi.getSavedProducts();
-      setSavedProducts(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setSavedProducts(list);
     } catch (err) {
       console.error(err);
       setSavedProducts([]);
@@ -110,7 +113,8 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       const data = await authApi.getTokenHistory();
-      setTokenHistory(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setTokenHistory(list);
     } catch (err) {
       console.error(err);
       setTokenHistory([]);
@@ -124,7 +128,8 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       const data = await marketplaceApi.getConversations();
-      setConversations(data);
+      const list = data.results || (Array.isArray(data) ? data : []);
+      setConversations(list);
     } catch (err) {
       console.error(err);
       setConversations([]);

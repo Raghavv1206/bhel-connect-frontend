@@ -26,9 +26,15 @@ const LoginPage = () => {
       return;
     }
     
+    // Trim whitespace from inputs (users may copy-paste with extra spaces)
+    const trimmedId = employeeId.trim();
+    const trimmedEmail = email.trim();
+    setEmployeeId(trimmedId);
+    setEmail(trimmedEmail);
+
     setLoading(true);
     try {
-      await authApi.requestOtp(employeeId, email);
+      await authApi.requestOtp(trimmedId, trimmedEmail);
       toast.success('OTP sent successfully to your email');
       setStage('VERIFY');
     } catch (error) {
@@ -145,6 +151,8 @@ const LoginPage = () => {
                     id="otp-code"
                     name="otpCode"
                     type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     maxLength={6}
                     required
                     value={otpCode}
