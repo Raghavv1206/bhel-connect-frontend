@@ -83,11 +83,21 @@ const HomePage = () => {
         console.error('Failed to fetch active listings count:', e);
       }
 
+      // 5. Fetch total registered members count
+      let membersCount = 0;
+      try {
+        const membersCountData = await authApi.getEmployeeCount();
+        membersCount = membersCountData.count || 0;
+      } catch (e) {
+        console.error('Failed to fetch registered members count:', e);
+        membersCount = 450; // Fallback in case of error
+      }
+
       // Update Dashboard Stats
       setStats({
         activeCampaigns: campaigns.length,
         activeListings: activeListingsCount,
-        totalMembers: 450, // Standard BHEL employee master list estimate
+        totalMembers: membersCount,
         myReservations: purchaseCount,
       });
 
@@ -118,42 +128,18 @@ const HomePage = () => {
       <style>{`
         @keyframes marquee {
           0% { transform: translate3d(0, 0, 0); }
-          100% { transform: translate3d(-100%, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
         .animate-marquee-scroll {
-          display: inline-block;
-          animation: marquee 35s linear infinite;
+          display: inline-flex;
+          align-items: center;
+          white-space: nowrap;
+          animation: marquee 25s linear infinite;
         }
         .animate-marquee-scroll:hover {
           animation-play-state: paused;
         }
       `}</style>
-
-      {/* SECTION 1: Thin Scrolling Marquee Ticker */}
-      <div className="bg-[#002244] text-white py-2.5 text-xs overflow-hidden whitespace-nowrap border-b border-blue-950 shadow-sm relative flex">
-        <div className="animate-marquee-scroll flex items-center font-bold tracking-wider uppercase">
-          {activeCampaigns.length > 0 ? (
-            // Duplicate the items array to allow a seamless transition cycle
-            [...activeCampaigns, ...activeCampaigns].map((c, idx) => (
-              <span key={`${c.id}-${idx}`} className="mx-8 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                <span>SmartBuy: {c.title}</span>
-                <span className="text-gray-400 font-medium">({c.confirmed_buyers_count || 0}/{c.total_quantity} Reserved)</span>
-                <span className="text-yellow-400 font-extrabold">{formatCurrency(c.current_price || c.price)}</span>
-                <span className="bg-blue-600 px-1.5 py-0.5 rounded text-[10px] lowercase font-semibold text-blue-50">
-                  {getRemainingDaysText(c.end_date)}
-                </span>
-                <span className="text-blue-900 ml-4 font-normal">|</span>
-              </span>
-            ))
-          ) : (
-            <span className="mx-8 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-              <span>Welcome to BHEL Connect! Active SmartBuy campaigns will show up here.</span>
-            </span>
-          )}
-        </div>
-      </div>
 
       {/* SECTION 2: CONDITIONAL RENDER — New in Marketplace headline banner */}
       {latestListings.length > 0 && (
@@ -176,6 +162,34 @@ const HomePage = () => {
           </div>
         </div>
       )}
+
+      {/* SECTION 1: Thin Scrolling Marquee Ticker */}
+      <div className="w-full bg-[#002244] text-white py-3 text-xs overflow-hidden border-b border-blue-950 shadow-sm relative">
+        <div className="w-full overflow-hidden">
+          <div className="animate-marquee-scroll font-bold tracking-wider uppercase">
+            {activeCampaigns.length > 0 ? (
+              // Display the recent 3 campaigns, duplicated once for a seamless infinite scroll loop
+              [...activeCampaigns.slice(0, 3), ...activeCampaigns.slice(0, 3)].map((c, idx) => (
+                <span key={`${c.id}-${idx}`} className="mx-8 flex items-center gap-2 flex-shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                  <span>SmartBuy: {c.title}</span>
+                  <span className="text-gray-400 font-medium">({c.confirmed_buyers_count || 0}/{c.total_quantity} Reserved)</span>
+                  <span className="text-yellow-400 font-extrabold">{formatCurrency(c.current_price || c.price)}</span>
+                  <span className="bg-blue-600 px-1.5 py-0.5 rounded text-[10px] lowercase font-semibold text-blue-50">
+                    {getRemainingDaysText(c.end_date)}
+                  </span>
+                  <span className="text-blue-900 ml-4 font-normal">|</span>
+                </span>
+              ))
+            ) : (
+              <span className="mx-8 flex items-center gap-2 flex-shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                <span>Welcome to BHEL Connect! Active SmartBuy campaigns will show up here.</span>
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Main Content Viewport Area */}
       <div className="flex-1 flex flex-col justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">

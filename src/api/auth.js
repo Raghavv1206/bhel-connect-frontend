@@ -20,11 +20,26 @@ export const authApi = {
     return response.data;
   },
 
+  // Submit Employee ID + password to authenticate and get JWT tokens
+  loginWithPassword: async (employeeId, password) => {
+    const response = await axiosInstance.post('/api/auth/login-password/', {
+      employee_id: employeeId,
+      password: password,
+    });
+    return response.data;
+  },
+
   // Blacklist the refresh token to logout
   logout: async (refreshToken) => {
     const response = await axiosInstance.post('/api/auth/logout/', {
       refresh: refreshToken,
     });
+    return response.data;
+  },
+
+  // Fetch total registered employee count
+  getEmployeeCount: async () => {
+    const response = await axiosInstance.get('/api/users/count/');
     return response.data;
   },
 

@@ -89,12 +89,12 @@ const PaymentApprovals = () => {
                     </td>
                     <td className="px-6 py-4 text-gray-650 font-medium">{ref.campaign_title}</td>
                     <td className="px-6 py-4 text-gray-500">₹{formatCurrency(ref.token_amount)}</td>
-                    <td className="px-6 py-4 font-extrabold text-red-650">₹{formatCurrency(ref.refund_amount)}</td>
+                    <td className="px-6 py-4 font-extrabold text-red-600">₹{formatCurrency(ref.refund_amount)}</td>
                     <td className="px-6 py-4 text-gray-500">{formatDate(ref.cancellation_date, 'dd MMM yyyy')}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleProcessRefund(ref.id)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-red-650 hover:bg-red-700 text-white rounded text-xs font-semibold shadow-sm ml-auto cursor-pointer"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-semibold shadow-sm ml-auto cursor-pointer"
                       >
                         <DollarSign className="w-3.5 h-3.5" /> Disburse Refund
                       </button>
