@@ -149,6 +149,29 @@ const ProfilePage = () => {
     if (activeTab === 'chats') fetchConversations();
   }, [activeTab]);
 
+  // Automatically open specific chat if query parameters match
+  const listingIdQuery = searchParams.get('listingId');
+  const otherUserIdQuery = searchParams.get('otherUserId');
+
+  useEffect(() => {
+    if (activeTab === 'chats' && conversations.length > 0 && listingIdQuery && otherUserIdQuery) {
+      const match = conversations.find(
+        (conv) =>
+          String(conv.listing.id) === String(listingIdQuery) &&
+          String(conv.other_user.employee_id) === String(otherUserIdQuery)
+      );
+      if (match) {
+        setChatParams({
+          listingId: match.listing.id,
+          sellerId: match.other_user.employee_id,
+          listingTitle: match.listing.title,
+          sellerName: match.other_user.name,
+          listingStatus: match.listing.status,
+        });
+      }
+    }
+  }, [activeTab, conversations, listingIdQuery, otherUserIdQuery]);
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -799,7 +822,7 @@ const ProfilePage = () => {
                   </p>
                 ) : selectedReg.campaign_status === 'active' ? (
                   <p className="text-amber-700">
-                    This campaign is currently <strong className="uppercase">Active</strong>. Cancelling your confirmed slot will forfeit <strong>50%</strong> of your token deposit. Refund amount will be ₹{(selectedReg.token_amount * 0.5).toFixed(2)}.
+                    This campaign is currently <strong className="uppercase">Active</strong>. Cancelling your confirmed slot will refund <strong>₹{formatCurrency(selectedReg.campaign_cancellation_refund_amount)}</strong> of your token deposit. The remaining <strong>₹{formatCurrency(parseFloat(selectedReg.token_amount) - parseFloat(selectedReg.campaign_cancellation_refund_amount))}</strong> will be forfeited as a penalty.
                   </p>
                 ) : (
                   <p className="text-amber-700">

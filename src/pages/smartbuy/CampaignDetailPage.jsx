@@ -85,6 +85,14 @@ const CampaignDetailPage = () => {
     try {
       // 1. Create a payment order on backend
       const orderData = await smartbuyApi.createOrder(id);
+
+      if (orderData.payment_required === false || orderData.payment_status === "approved") {
+        toast.success(orderData.detail || "Registration confirmed! Your campaign slot is booked.");
+        fetchDetail();
+        setRegistering(false);
+        return;
+      }
+
       const { payment_session_id, order_id } = orderData;
 
       if (!payment_session_id) {
@@ -170,12 +178,7 @@ const CampaignDetailPage = () => {
     100
   );
 
-  const getLowestPrice = () => {
-    if (!campaign?.pricing_tiers || campaign.pricing_tiers.length === 0) return 0;
-    const prices = campaign.pricing_tiers.map(t => parseFloat(t.price));
-    return Math.min(...prices);
-  };
-  const tokenDeposit = getLowestPrice() * 0.1;
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -309,8 +312,8 @@ const CampaignDetailPage = () => {
               <span className="text-3xl font-black text-[#003366]">{formatCurrency(campaign.current_price)}</span>
             </div>
             <div className="text-right">
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Token Deposit (10%)</span>
-              <span className="text-xl font-bold text-gray-900">{formatCurrency(tokenDeposit)}</span>
+              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Token Deposit</span>
+              <span className="text-xl font-bold text-gray-900">{formatCurrency(campaign.token_deposit)}</span>
             </div>
           </div>
 

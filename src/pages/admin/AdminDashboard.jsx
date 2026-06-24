@@ -138,7 +138,6 @@ const AdminDashboard = () => {
               label="Active Listings"
               value={metrics.active_listings}
               color="bg-green-600"
-              onClick={() => navigate('/admin/listings')}
             />
             <StatCard
               icon={AlertCircle}

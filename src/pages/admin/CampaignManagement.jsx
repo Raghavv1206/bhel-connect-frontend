@@ -42,6 +42,8 @@ const CampaignManagement = () => {
     total_quantity: 50,
     duration_days: 14,
     start_date: '',
+    token_deposit: '',
+    cancellation_refund_amount: '',
     pricing_tiers: [
       { min_buyers: 1, max_buyers: 10, price: '' },
       { min_buyers: 11, max_buyers: 25, price: '' },
@@ -173,6 +175,11 @@ const CampaignManagement = () => {
         price: parseFloat(t.price)
       }));
 
+      if (parseFloat(newCampaign.cancellation_refund_amount) > parseFloat(newCampaign.token_deposit)) {
+        toast.error('Cancellation refund amount cannot exceed the token deposit.');
+        return;
+      }
+
       const payload = {
         title: newCampaign.title,
         description: newCampaign.description,
@@ -180,6 +187,8 @@ const CampaignManagement = () => {
         total_quantity: parseInt(newCampaign.total_quantity),
         duration_days: parseInt(newCampaign.duration_days),
         start_date: newCampaign.start_date,
+        token_deposit: parseFloat(newCampaign.token_deposit),
+        cancellation_refund_amount: parseFloat(newCampaign.cancellation_refund_amount),
         pricing_tiers: formattedTiers
       };
 
@@ -197,6 +206,8 @@ const CampaignManagement = () => {
         total_quantity: 50,
         duration_days: 14,
         start_date: '',
+        token_deposit: '',
+        cancellation_refund_amount: '',
         pricing_tiers: [
           { min_buyers: 1, max_buyers: 10, price: '' },
           { min_buyers: 11, max_buyers: 25, price: '' },
@@ -535,6 +546,34 @@ const CampaignManagement = () => {
                         type="number"
                         value={newCampaign.duration_days}
                         onChange={(e) => setNewCampaign({ ...newCampaign, duration_days: e.target.value })}
+                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Token Deposit (₹)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newCampaign.token_deposit}
+                        onChange={(e) => setNewCampaign({ ...newCampaign, token_deposit: e.target.value })}
+                        placeholder="e.g. 500"
+                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Refund Amount on Cancel (₹)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newCampaign.cancellation_refund_amount}
+                        onChange={(e) => setNewCampaign({ ...newCampaign, cancellation_refund_amount: e.target.value })}
+                        placeholder="e.g. 250"
                         className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border"
                         required
                       />
