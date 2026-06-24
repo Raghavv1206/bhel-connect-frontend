@@ -160,13 +160,7 @@ const AdminDashboard = () => {
               value={metrics.new_users_this_month}
               color="bg-indigo-500"
             />
-            <StatCard
-              icon={DollarSign}
-              label="Pending Payments"
-              value={metrics.pending_payment_approvals}
-              color={metrics.pending_payment_approvals > 0 ? 'bg-orange-500' : 'bg-gray-400'}
-              onClick={() => navigate('/admin/payments')}
-            />
+
             <StatCard
               icon={RefreshCw}
               label="Pending Refunds"

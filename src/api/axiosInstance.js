@@ -83,7 +83,9 @@ axiosInstance.interceptors.response.use(
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
         // No refresh token available, redirect to login
-        localStorage.clear();
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
         window.location.href = '/login';
         return Promise.reject(error);
       }
@@ -115,7 +117,9 @@ axiosInstance.interceptors.response.use(
         // If refresh fails, clear storage and force login
         processQueue(refreshError, null);
         isRefreshing = false;
-        localStorage.clear();
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }

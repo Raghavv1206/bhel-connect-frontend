@@ -151,17 +151,7 @@ const Navbar = () => {
           created_at: new Date().toISOString()
         });
       }
-      if (adminStats.pending_payment_approvals > 0) {
-        combined.push({
-          id: 'admin-payments',
-          title: 'Pending Payments Verification',
-          message: `There are ${adminStats.pending_payment_approvals} deposits awaiting approval.`,
-          notification_type: 'admin_payment',
-          link: '/admin/payments',
-          is_read: false,
-          created_at: new Date().toISOString()
-        });
-      }
+
       if (adminStats.pending_refunds > 0) {
         combined.push({
           id: 'admin-refunds',
@@ -181,7 +171,6 @@ const Navbar = () => {
     let count = unreadCount;
     if (isAdmin && adminStats) {
       if (adminStats.pending_listings > 0) count += 1;
-      if (adminStats.pending_payment_approvals > 0) count += 1;
       if (adminStats.pending_refunds > 0) count += 1;
     }
     return count;
