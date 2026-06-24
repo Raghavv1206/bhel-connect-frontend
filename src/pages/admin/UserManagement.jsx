@@ -71,8 +71,8 @@ const ImportResultModal = ({ result, onClose }) => (
 // ─── CSV Template Download Helper ────────────────────────────────────────────
 
 const downloadCsvTemplate = () => {
-  const headers = 'employee_id,name,email,mobile,department\n';
-  const sample = 'EMP001,John Doe,john.doe@bhel.in,9876543210,Finance\n';
+  const headers = 'employee_id,name,email,mobile,department,password\n';
+  const sample = 'EMP001,John Doe,john.doe@bhel.in,9876543210,Finance,BhelPass@123\n';
   const blob = new Blob([headers + sample], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -255,7 +255,7 @@ const UserManagement = () => {
         <div className="text-sm text-blue-800">
           <span className="font-semibold">Bulk Import:</span> Upload a UTF-8 CSV file with columns:{' '}
           <code className="bg-blue-100 px-1 py-0.5 rounded font-mono text-xs">
-            employee_id, name, email, mobile, department
+            employee_id, name, email, mobile, department, password
           </code>
           . New employees are created; existing ones are updated. Download the template above for the correct format.
         </div>
