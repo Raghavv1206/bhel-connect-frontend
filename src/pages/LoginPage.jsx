@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   // Login stages: 'REQUEST' (Email/Password & ID) or 'VERIFY' (OTP Code)
   const [stage, setStage] = useState('REQUEST');
-  const [loginMethod, setLoginMethod] = useState('OTP'); // 'OTP' or 'PASSWORD'
+  const [loginMethod, setLoginMethod] = useState('PASSWORD'); // 'OTP' or 'PASSWORD'
   const [employeeId, setEmployeeId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
