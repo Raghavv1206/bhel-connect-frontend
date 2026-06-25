@@ -199,6 +199,7 @@ const CampaignDetailPage = () => {
                 className="w-full h-full object-contain"
                 width="600"
                 height="384"
+                crossOrigin="anonymous"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">

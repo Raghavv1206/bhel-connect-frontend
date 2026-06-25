@@ -75,6 +75,7 @@ const CampaignListPage = () => {
                     className="w-full h-full object-cover"
                     width="350"
                     height="192"
+                    crossOrigin="anonymous"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
