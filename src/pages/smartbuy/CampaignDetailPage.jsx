@@ -7,6 +7,28 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { toast } from 'react-hot-toast';
 import { Clock } from 'lucide-react';
 
+// Dynamic Cashfree JS SDK loader
+const loadCashfreeScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && window.Cashfree) {
+      resolve(true);
+      return;
+    }
+    const existingScript = document.querySelector('script[src="https://sdk.cashfree.com/js/v3/cashfree.js"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(true));
+      existingScript.addEventListener('error', () => resolve(false));
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 // Initialize Cashfree once
 const cashfreeMode = import.meta.env.VITE_CASHFREE_ENV || 'sandbox';
 let cashfreeInstance = null;
@@ -31,6 +53,11 @@ const CampaignDetailPage = () => {
 
   // Register state
   const [registering, setRegistering] = useState(false);
+
+  // Dynamically load Cashfree SDK on mount
+  useEffect(() => {
+    loadCashfreeScript();
+  }, []);
 
   // Fetch campaign detail
   const fetchDetail = useCallback(async () => {
@@ -101,9 +128,16 @@ const CampaignDetailPage = () => {
         return;
       }
 
-      const cfInstance = getCashfree();
+      let cfInstance = getCashfree();
       if (!cfInstance) {
-        toast.error("Cashfree SDK not initialized. Please check network/script imports.");
+        // Fallback: Try loading on the fly if not already loaded
+        const loaded = await loadCashfreeScript();
+        if (loaded) {
+          cfInstance = getCashfree();
+        }
+      }
+      if (!cfInstance) {
+        toast.error("Cashfree SDK not initialized. Please check your network connection.");
         setRegistering(false);
         return;
       }
@@ -183,7 +217,7 @@ const CampaignDetailPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back button */}
-      <button onClick={() => navigate('/smartbuy')} className="text-sm font-semibold text-blue-600 hover:text-blue-500 mb-6 cursor-pointer">
+      <button onClick={() => navigate('/smartbuy')} className="text-sm font-bold text-[#003366] hover:text-[#002244] mb-6 cursor-pointer">
         &larr; Back to campaigns list
       </button>
 
@@ -226,17 +260,17 @@ const CampaignDetailPage = () => {
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.days}</span>
                   <span className="text-[10px] uppercase font-bold text-gray-600">Days</span>
                 </div>
-                <div className="text-2xl font-light text-gray-300">:</div>
+                <div className="text-2xl font-medium text-gray-400">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.hours}</span>
                   <span className="text-[10px] uppercase font-bold text-gray-600">Hrs</span>
                 </div>
-                <div className="text-2xl font-light text-gray-300">:</div>
+                <div className="text-2xl font-medium text-gray-400">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.minutes}</span>
                   <span className="text-[10px] uppercase font-bold text-gray-600">Mins</span>
                 </div>
-                <div className="text-2xl font-light text-gray-300">:</div>
+                <div className="text-2xl font-medium text-gray-400">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.seconds}</span>
                   <span className="text-[10px] uppercase font-bold text-gray-600">Secs</span>
@@ -263,8 +297,8 @@ const CampaignDetailPage = () => {
               <table className="min-w-full divide-y divide-gray-150">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-bold text-gray-400 uppercase">Milestone</th>
-                    <th className="px-4 py-2 text-right text-xs font-bold text-gray-400 uppercase">Unit Price</th>
+                    <th className="px-4 py-2 text-left text-xs font-bold text-gray-600 uppercase">Milestone</th>
+                    <th className="px-4 py-2 text-right text-xs font-bold text-gray-600 uppercase">Unit Price</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-150 text-sm">
@@ -311,11 +345,11 @@ const CampaignDetailPage = () => {
           {/* Current Price prominent display */}
           <div className="bg-[#003366]/5 border border-[#003366]/10 rounded-2xl p-5 mb-6 flex items-center justify-between">
             <div>
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Current Price per unit</span>
+              <span className="block text-xs font-bold text-gray-600 uppercase tracking-wider">Current Price per unit</span>
               <span className="text-3xl font-black text-[#003366]">{formatCurrency(campaign.current_price)}</span>
             </div>
             <div className="text-right">
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Token Deposit</span>
+              <span className="block text-xs font-bold text-gray-600 uppercase tracking-wider">Token Deposit</span>
               <span className="text-xl font-bold text-gray-900">{formatCurrency(campaign.token_deposit)}</span>
             </div>
           </div>
