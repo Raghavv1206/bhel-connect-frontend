@@ -8,7 +8,7 @@ import ErrorState from '../../components/ErrorState';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { formatDate, formatRelativeTime } from '../../utils/formatDate';
 import { toast } from 'react-hot-toast';
-import { User, ShoppingBag, List, Bookmark, History, Save, Edit3, ShieldAlert, MessageSquare } from 'lucide-react';
+import { User, ShoppingBag, List, Bookmark, History, Save, Edit3, ShieldAlert, MessageSquare, Download } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
 import ChatDrawer from '../../components/ChatDrawer';
 
@@ -197,6 +197,30 @@ const ProfilePage = () => {
     setSelectedReg(reg);
     setUnderstandPenaltyChecked(false);
     setCancelRegModalOpen(true);
+  };
+
+  const handleDownloadReceipt = async (reg) => {
+    try {
+      toast.loading('Generating receipt PDF...');
+      const blob = await smartbuyApi.downloadReceipt(reg.campaign);
+      
+      // Create a temporary link to download the blob
+      const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `smartbuy_receipt_${reg.campaign_title || 'campaign'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.dismiss();
+      toast.success('Receipt downloaded successfully!');
+    } catch (err) {
+      toast.dismiss();
+      toast.error('Failed to download receipt PDF.');
+    }
   };
 
   const handleConfirmCancel = async () => {
@@ -416,34 +440,50 @@ const ProfilePage = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 font-medium text-gray-700">
-                      {myPurchases.map((reg) => (
-                        <tr key={reg.id}>
-                          <td className="px-6 py-4">{reg.campaign_title || reg.campaign?.title}</td>
-                          <td className="px-6 py-4">{formatDate(reg.reservation_date, 'dd MMM yyyy')}</td>
-                          <td className="px-6 py-4 text-right">{formatCurrency(reg.token_amount)}</td>
-                          <td className="px-6 py-4 text-center">
-                            <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                              reg.payment_status === 'approved'
-                                ? 'bg-green-100 text-green-800'
-                                : reg.payment_status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}>
-                              {reg.payment_status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {reg.payment_status !== 'cancelled' && reg.payment_status !== 'rejected' && (
-                              <button
-                                onClick={() => handleCancelRegistrationClick(reg)}
-                                className="text-xs font-bold text-red-650 hover:text-red-500 border border-red-200 bg-red-50/50 px-2.5 py-1 rounded-md cursor-pointer transition-colors"
-                              >
-                                Cancel
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                      {myPurchases.map((reg) => {
+                        const isCampaignOver = reg.campaign_status !== 'active' || new Date(reg.campaign_end_date) <= new Date();
+                        return (
+                          <tr key={reg.id}>
+                            <td className="px-6 py-4">{reg.campaign_title || reg.campaign?.title}</td>
+                            <td className="px-6 py-4">{formatDate(reg.reservation_date, 'dd MMM yyyy')}</td>
+                            <td className="px-6 py-4 text-right">{formatCurrency(reg.token_amount)}</td>
+                            <td className="px-6 py-4 text-center">
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                                reg.payment_status === 'approved'
+                                  ? 'bg-green-100 text-green-800'
+                                  : reg.payment_status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {reg.payment_status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              {reg.payment_status !== 'cancelled' && reg.payment_status !== 'rejected' && (
+                                <>
+                                  {!isCampaignOver ? (
+                                    <button
+                                      onClick={() => handleCancelRegistrationClick(reg)}
+                                      className="text-xs font-bold text-red-650 hover:text-red-500 border border-red-200 bg-red-50/50 px-2.5 py-1 rounded-md cursor-pointer transition-colors"
+                                    >
+                                      Cancel
+                                    </button>
+                                  ) : (
+                                    reg.payment_status === 'approved' && (
+                                      <button
+                                        onClick={() => handleDownloadReceipt(reg)}
+                                        className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-500 border border-blue-200 bg-blue-50/50 px-2.5 py-1 rounded-md cursor-pointer transition-colors"
+                                      >
+                                        <Download className="w-3.5 h-3.5" /> Receipt
+                                      </button>
+                                    )
+                                  )}
+                                </>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

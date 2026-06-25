@@ -80,6 +80,14 @@ export const smartbuyApi = {
     return response.data;
   },
 
+  // Download slot reservation receipt PDF
+  downloadReceipt: async (campaignId) => {
+    const response = await axiosInstance.get(`/api/smartbuy/campaigns/${campaignId}/receipt/`, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
   // Create Cashfree payment order (returns payment_session_id)
   createOrder: async (campaignId) => {
     const response = await axiosInstance.post(`/api/smartbuy/campaigns/${campaignId}/create-order/`);
