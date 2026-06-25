@@ -49,7 +49,7 @@ const CampaignListPage = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#003366] tracking-tight">SmartBuy Campaigns</h1>
-        <p className="mt-2 text-sm text-gray-650">
+        <p className="mt-2 text-sm text-gray-655">
           Join forces with other employees to hit buyer milestones and unlock deep volume discounts.
         </p>
       </div>
@@ -73,6 +73,8 @@ const CampaignListPage = () => {
                     src={campaign.product_image}
                     alt={campaign.title}
                     className="w-full h-full object-cover"
+                    width="350"
+                    height="192"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
@@ -87,16 +89,16 @@ const CampaignListPage = () => {
 
               {/* Campaign details */}
               <div className="p-5 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold text-gray-900 line-clamp-1 mb-2">
+                <h2 className="text-lg font-bold text-gray-900 line-clamp-1 mb-2">
                   {campaign.title}
-                </h3>
+                </h2>
                 <p className="text-sm text-gray-600 line-clamp-2 mb-4">
                   {campaign.description}
                 </p>
 
                 {/* Progress bar */}
                 <div className="mb-4">
-                  <div className="flex justify-between text-xs font-semibold text-gray-550 mb-1">
+                  <div className="flex justify-between text-xs font-semibold text-gray-600 mb-1">
                     <span>
                       {campaign.total_quantity - campaign.available_quantity} / {campaign.total_quantity} Reserved
                     </span>
@@ -111,7 +113,7 @@ const CampaignListPage = () => {
                 </div>
 
                 {/* Info row */}
-                <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4 mb-4 text-xs font-medium text-gray-550">
+                <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4 mb-4 text-xs font-medium text-gray-600">
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4 text-gray-400" />
                     <span>Ends {formatDate(campaign.end_date, 'dd MMM')}</span>

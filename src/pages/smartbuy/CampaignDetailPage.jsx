@@ -197,6 +197,8 @@ const CampaignDetailPage = () => {
                 src={campaign.product_image}
                 alt={campaign.title}
                 className="w-full h-full object-contain"
+                width="600"
+                height="384"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -221,22 +223,22 @@ const CampaignDetailPage = () => {
               <div className="flex gap-4">
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.days}</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-450">Days</span>
+                  <span className="text-[10px] uppercase font-bold text-gray-600">Days</span>
                 </div>
                 <div className="text-2xl font-light text-gray-300">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.hours}</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-450">Hrs</span>
+                  <span className="text-[10px] uppercase font-bold text-gray-600">Hrs</span>
                 </div>
                 <div className="text-2xl font-light text-gray-300">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.minutes}</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-450">Mins</span>
+                  <span className="text-[10px] uppercase font-bold text-gray-600">Mins</span>
                 </div>
                 <div className="text-2xl font-light text-gray-300">:</div>
                 <div>
                   <span className="block text-2xl font-black text-gray-900">{timeLeft.seconds}</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-450">Secs</span>
+                  <span className="text-[10px] uppercase font-bold text-gray-600">Secs</span>
                 </div>
               </div>
             </div>
@@ -255,7 +257,7 @@ const CampaignDetailPage = () => {
           <p className="text-sm text-gray-600 mb-6">{campaign.description}</p>
 
           <div className="mb-6">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Pricing Tiers</h3>
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Pricing Tiers</h2>
             <div className="border border-gray-150 rounded-xl overflow-hidden">
               <table className="min-w-full divide-y divide-gray-150">
                 <thead className="bg-gray-50">
